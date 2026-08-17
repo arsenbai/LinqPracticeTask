@@ -133,6 +133,7 @@
 //}
 
 using LinqPracticeTask.Model;
+using NUnit.Framework;
 
 List <Customer> _dataTask = new List<Customer>
         {
@@ -146,3 +147,8 @@ var res = _dataTask.Where(c => c.OverallTrainingTime == _dataTask.Min(x => x.Ove
     .Select(c => $"{c.Id} / {c.Year} / {c.Month} / {c.OverallTrainingTime}").Last();
 
 Console.WriteLine(res);
+
+Model1 m1 = new Model1 { Ticker = "AAPL", Price = 22.5, CustomerId = 2};
+Model2 m2 = new Model2 { Symbol = "AAPL", PurchasePrice = 22.5 };
+Assert.That(m1.Price, Is.EqualTo(m2.PurchasePrice));
+Assert.That(m1.Ticker, Is.EqualTo(m2.Symbol));
