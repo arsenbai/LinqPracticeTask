@@ -152,3 +152,73 @@ Model1 m1 = new Model1 { Ticker = "AAPL", Price = 22.5, CustomerId = 2};
 Model2 m2 = new Model2 { Symbol = "AAPL", PurchasePrice = 22.5 };
 Assert.That(m1.Price, Is.EqualTo(m2.PurchasePrice));
 Assert.That(m1.Ticker, Is.EqualTo(m2.Symbol));
+
+Supplier.ProductsAvailable =
+[
+    new Product(1, "PC", "Electronics", 1227.99m, true),
+    new Product(2, "Earphones", "Electronics", 200m, false),
+    new Product(3, "Laptop", "Electronics", 1999m, true),
+    new Product(4, "Captain America", "Toys", 44m, true),
+    new Product(5, "Batman", "Toys", 54m, false),
+    new Product(6, "Hat", "Accessories", 30m, true),
+    new Product(7, "Gloves", "Accessories", 50m, true),
+];
+
+List<Supplier> suppliers =
+[
+    new Supplier { Address = "12 Warehouse Rd", Industry = "Electronics" },
+    new Supplier { Address = "88 Harbor Ave", Industry = "Electronics" },
+    new Supplier { Address = "5 Toy Lane", Industry = "Toys" },
+    new Supplier { Address = "21 Accessory Blvd", Industry = "Accessories" },
+];
+
+var electronicsSuppliers = suppliers.Where(s => s.Industry == "Electronics");
+Console.WriteLine("Electronics suppliers:");
+foreach (var supplier in electronicsSuppliers)
+{
+    Console.WriteLine($" - {supplier.Address}");
+}
+
+var suppliersByIndustry = suppliers.GroupBy(s => s.Industry);
+Console.WriteLine("Suppliers by industry:");
+foreach (var group in suppliersByIndustry)
+{
+    Console.WriteLine($"GROUP: {group.Key}");
+    foreach (var supplier in group)
+    {
+        Console.WriteLine($" - {supplier.Address}");
+    }
+}
+
+var inStockCatalogNames = Supplier.ProductsAvailable
+    .Where(p => p.InStock)
+    .Select(p => p.Name);
+Console.WriteLine("In-stock catalog:");
+foreach (var name in inStockCatalogNames)
+{
+    Console.WriteLine($" - {name}");
+}
+
+var cheapCatalogNames = Supplier.ProductsAvailable
+    .Where(p => p.Price < 100m)
+    .Select(p => p.Name);
+Console.WriteLine("Catalog cheaper than 100:");
+foreach (var name in cheapCatalogNames)
+{
+    Console.WriteLine($" - {name}");
+}
+
+var firstSupplier = suppliers[0];
+var secondSupplier = suppliers[1];
+Console.WriteLine($"Before: {firstSupplier.Address} | {firstSupplier.Industry}");
+firstSupplier.Address = "99 Relocated Park";
+firstSupplier.Industry = "Accessories";
+Console.WriteLine($"After: {firstSupplier.Address} | {firstSupplier.Industry}");
+
+Console.WriteLine($"Shared catalog count via first supplier: {Supplier.ProductsAvailable.Count}");
+Console.WriteLine($"Shared catalog count via second supplier: {Supplier.ProductsAvailable.Count}");
+var productToRemove = Supplier.ProductsAvailable.First(p => p.Name == "Hat");
+Supplier.ProductsAvailable.Add(new Product(8, "Mario", "Game", 65m, true));
+Supplier.ProductsAvailable.Remove(productToRemove);
+Console.WriteLine($"Shared catalog count after add/remove (first): {Supplier.ProductsAvailable.Count}");
+Console.WriteLine($"Shared catalog count after add/remove (second): {Supplier.ProductsAvailable.Count}");
